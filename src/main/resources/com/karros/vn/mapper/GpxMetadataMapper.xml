@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.karros.vn.mapper.GpxMetadataMapper">
+  <resultMap id="GpxMetadataResultMap" type="com.karros.vn.model.gpx.GpxMetadata">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="link" jdbcType="VARCHAR" property="link" />
+    <result column="link_text" jdbcType="VARCHAR" property="linkText" />
+    <result column="metadata_time" jdbcType="TIMESTAMP" property="metadataTime" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+  </resultMap>
+  <select id="selectById" resultMap="GpxMetadataResultMap">
+    SELECT 
+      id,
+      user_id,
+      name,
+      description,
+      author,
+      link,
+      link_text,
+      metadata_time,
+      updated_by,
+      created_by
+    FROM gpx_metadata
+    WHERE 
+      id = #{id,jdbcType=INTEGER}
+      AND delete_flag = 0
+  </select>  
+  <resultMap id="LatestTrackResultMap" type="com.karros.vn.model.gpx.LatestTrack">
+    <id column="id" jdbcType="INTEGER" property="gpxMetadataId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="metadata_time" jdbcType="TIMESTAMP" property="time" />
+  </resultMap>
+  <select id="getLatestTrack" resultMap="LatestTrackResultMap">
+    SELECT 
+      id,
+      name,
+      description,
+      metadata_time
+    FROM gpx_metadata
+    WHERE 
+      user_id = #{userId,jdbcType=INTEGER}
+      AND delete_flag = 0
+    ORDER BY metadata_time desc
+    LIMIT 1
+  </select>  
+  <select id="countByUserIdAndName" resultType="java.lang.Integer">
+    SELECT count(id)
+    FROM gpx_metadata
+    WHERE name = #{name,jdbcType=VARCHAR}
+      AND user_id = #{userId,jdbcType=INTEGER}
+      AND delete_flag = 0
+  </select>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="gpxMetadata.id" keyColumn="id">
+    INSERT INTO gpx_metadata
+      (user_id,
+       name,
+       description,
+       author,
+       link,
+       link_text,
+       metadata_time,
+       updated_by,
+       created_by
+       )values (
+       #{gpxMetadata.userId,jdbcType=INTEGER},
+       #{gpxMetadata.name,jdbcType=VARCHAR},
+       #{gpxMetadata.description,jdbcType=VARCHAR},
+       #{gpxMetadata.author,jdbcType=VARCHAR},
+       #{gpxMetadata.link,jdbcType=VARCHAR},
+       #{gpxMetadata.linkText,jdbcType=VARCHAR},
+       #{gpxMetadata.metadataTime,jdbcType=TIMESTAMP},
+       #{gpxMetadata.updatedBy,jdbcType=INTEGER},
+       #{gpxMetadata.createdBy,jdbcType=INTEGER}
+       )
+  </insert>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.karros.vn.mapper.GpxWptMapper">
+  <resultMap id="GpxMetadataResultMap" type="com.karros.vn.model.gpx.GpxWpt">
+    <result column="gpx_metadata_id" jdbcType="INTEGER" property="gpxMetadataId" />
+    <result column="lat" jdbcType="DOUBLE" property="lat" />
+    <result column="lon" jdbcType="DOUBLE" property="lon" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sym" jdbcType="VARCHAR" property="sym" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+  </resultMap>
+  <select id="selectByMetadataId" resultMap="GpxMetadataResultMap">
+    SELECT 
+      gpx_metadata_id,
+      lat,
+      lon,
+      name,
+      sym,
+      updated_by,
+      created_by
+    FROM gpx_wpt
+    WHERE 
+      gpx_metadata_id = #{gpxMetadataId,jdbcType=INTEGER}
+      AND delete_flag = 0
+  </select>
+  <insert id="insertMultiple">
+    INSERT INTO gpx_wpt
+      (gpx_metadata_id,
+       lat,
+       lon,
+       name,
+       sym,
+       updated_by,
+       created_by
+       )values
+       <foreach item="gpxWpt" index="index" collection="gpxWpts" separator=",">
+       (
+       #{gpxWpt.gpxMetadataId,jdbcType=INTEGER},
+       #{gpxWpt.lat,jdbcType=DOUBLE},
+       #{gpxWpt.lon,jdbcType=DOUBLE},
+       #{gpxWpt.name,jdbcType=VARCHAR},
+       #{gpxWpt.sym,jdbcType=VARCHAR},
+       #{gpxWpt.updatedBy,jdbcType=INTEGER},
+       #{gpxWpt.createdBy,jdbcType=INTEGER}
+       )
+       </foreach>
+  </insert>
+</mapper>
