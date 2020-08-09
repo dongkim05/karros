@@ -50,7 +50,7 @@ public class UserController {
     return ResponseEntity.ok(userService.register(info));
   }
 
-  @RequestMapping(method = RequestMethod.GET, path = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping("/logout")
   public ResponseEntity<MsgModel> logout(HttpServletRequest request, @RequestBody(required = true) LogoutRequest logoutRequest) {
 
     return ResponseEntity.ok(userService.logout(request, logoutRequest));
